@@ -1,4 +1,6 @@
 import numpy as np
+from ..distribution import KFDistribution
+from ..state import KFState
 
 
 def predictive_mean(mean: np.ndarray, transition: np.ndarray) -> np.ndarray:
@@ -20,3 +22,14 @@ def predictive_cov(
     """
     cov = transition @ cov @ transition.T + noise
     return cov
+
+
+def predict_step(state: KFState, dist: KFDistribution) -> KFState:
+    """Prediction step in Kalman filter eqns"""
+    # predictive mean, µ = F µ
+    mean = dist.predictive_mean(state.mean)
+
+    # predictive covariance, Σ = F Σ F' + Q
+    cov = dist.predictive_cov(state.cov)
+
+    return mean, cov
