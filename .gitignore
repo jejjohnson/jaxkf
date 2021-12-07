@@ -3,3 +3,4 @@
 \downloaded_data/
 *.zip
 *.csv
+\__pycache__/
