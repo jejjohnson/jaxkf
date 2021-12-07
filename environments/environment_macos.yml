@@ -1,0 +1,79 @@
+name: eo_mgp
+channels:
+- defaults
+- conda-forge
+dependencies:
+- python=3.9
+# Standard Libraries
+- numpy             # Numerical Linear Algebra
+- scipy             # Scientific Computing
+- xarray            # Data structures
+- pandas            # Data structure
+- scikit-learn      # Machine Learning
+- scikit-image      # Image Processing
+- statsmodels       # Statistical Learning
+# Geospatial packages
+- geopandas
+- conda-forge::regionmask
+# - conda-forge::esmf
+# - conda-forge::esmpy
+- conda-forge::xesmf
+- conda-forge::xcube
+- conda-forge::rioxarray
+- conda-forge::shapely
+- conda-forge::pooch
+- conda-forge::cftime
+- affine
+# Scale
+- cython
+- numba
+- dask              # Out-of-Core processing
+- dask-ml           # Out-of-Core machine learning
+# PLOTTING LIBRARY
+- matplotlib        # standard plotting library
+- seaborn           # Stats viz library
+- bokeh
+- plotly::plotly>=4.6.0
+- pyviz::geoviews
+- conda-forge::cartopy
+- datashader       
+# Storage
+- hdf5              # standard large storage h5
+- conda-forge::zarr
+# JAX FRAMEWORK
+- conda-forge::jax
+- conda-forge::jaxlib
+# TENSORFLOW FRAMEWORK
+- conda-forge::tensorflow-probability>=0.14.1
+- conda-forge::tensorflow-datasets
+# GUI
+- ipykernel
+- conda-forge::tqdm
+- pip
+- pip:
+  # Jax framework
+  # - "https://storage.googleapis.com/jax-releases/mac/jaxlib-0.1.73-cp39-none-macosx_10_9_x86_64.whl"
+  # - jax
+  # - git+git://github.com/deepmind/tree.git
+  - distrax
+  - chex
+  - optax
+  - edward2[jax]
+  - numpyro
+  - objax
+  - bayesnewton
+  - einops
+  # formatting
+  - black
+  - pylint
+  - isort
+  - flake8
+  - mypy
+  - pytest
+  # Notebook stuff
+  - pyprojroot
+  # logging
+  - wandb
+  # plotting
+  - celluloid
+  - corner
