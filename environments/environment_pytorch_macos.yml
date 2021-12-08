@@ -1,4 +1,4 @@
-name: eo_mgp
+name: eo_torch_mgp
 channels:
 - defaults
 - conda-forge
@@ -23,7 +23,8 @@ dependencies:
 - conda-forge::shapely
 - conda-forge::pooch
 - conda-forge::cftime
-- affine
+# - conda-forge::cmip6_preprocessing
+# - affine
 # Scale
 - cython
 - numba
@@ -40,28 +41,30 @@ dependencies:
 # Storage
 - hdf5              # standard large storage h5
 - conda-forge::zarr
-# JAX FRAMEWORK
-- conda-forge::jax
-- conda-forge::jaxlib
-# TENSORFLOW FRAMEWORK
-- conda-forge::tensorflow-probability>=0.14.1
-- conda-forge::tensorflow-datasets
+# PYTORCH ECOSYSTEM
+- pytorch::pytorch           # tensor library
+- pytorch::torchvision       # pytorch visual library
+- pytorch::torchaudio       # pytorch visual library
+- pytorch::captum
+- pytorch::fastai
 # GUI
 - ipykernel
 - conda-forge::tqdm
 - pip
 - pip:
-  # Jax framework
-  # - "https://storage.googleapis.com/jax-releases/mac/jaxlib-0.1.73-cp39-none-macosx_10_9_x86_64.whl"
-  # - jax
-  # - git+git://github.com/deepmind/tree.git
-  - distrax
-  - chex
-  - optax
-  - edward2[jax]
-  - numpyro
-  - objax
-  - bayesnewton
+  # OTHER EO
+  - netCDF4
+  - shapely
+  - affine
+  # PYTORCH ECOSYSTEM
+  - pyro-ppl        # probabilistic programming library
+  - gpytorch        # Gaussian Processes
+  - pytorch-lightning
+  - torchmetrics
+  - lightning-bolts
+  - skorch
+  # - rastervision
+  - pytorch-eo
   - einops
   # formatting
   - black
@@ -70,10 +73,19 @@ dependencies:
   - flake8
   - mypy
   - pytest
+  - pre-commit
+  - rich
+  - sh
+  - pudb
   # Notebook stuff
   - pyprojroot
+  - python-dotenv
   # logging
   - wandb
+  # experiment
+  - hydra-core
+  - hydra-colorlog
+  - hydra-optuna-sweeper
   # plotting
   - celluloid
   - corner
