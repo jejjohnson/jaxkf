@@ -1,5 +1,3 @@
-# TODO: Do sample for event dimensions
-
 from typing import Sequence, Tuple, Union
 import collections.abc
 import operator
