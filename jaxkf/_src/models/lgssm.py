@@ -3,7 +3,9 @@ import treex as tx
 
 class LGSSM(tx.Module):
     transition_matrix: tx.Paramter.node()
+    transition_noise: tx.Paramter.node()
     observation_matrix: tx.Parameter.node()
+    observation_noise: tx.Parameter.node()
 
     def __init__(self):
         pass

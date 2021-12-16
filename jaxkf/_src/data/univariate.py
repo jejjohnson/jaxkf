@@ -1,5 +1,5 @@
 import jax.numpy as jnp
-from jaxkf._src.models.kalmanfilter import init_kf_params
+from jaxkf._src.models.kf import init_kf_params
 
 
 def make_noisy_signal_model(

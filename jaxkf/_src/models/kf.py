@@ -3,7 +3,15 @@ from tensorflow_probability.substrates import jax as tfp
 
 tfd = tfp.distributions
 
-from jaxkf._src.types import StatePrior, KFParamsDist
+from jaxkf._src.models.lgssm import LGSSM
+import treex as tx
+
+
+class KalmanFilter(LGSSM):
+    transition_matrix: tx.State.node()
+    transition_noise: tx.Paramter.node()
+    observation_matrix: tx.State.node()
+    observation_noise: tx.State.node()
 
 
 def init_kf_params(
