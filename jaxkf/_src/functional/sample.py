@@ -95,23 +95,26 @@ def sample_sequential_vectorized(
     # initialize keys for steps
     if seed is None:
         key = jax.random.PRNGKey(123)
-    if isinstance(seed, int):
+    elif isinstance(seed, int):
         key = jax.random.PRNGKey(seed)
+    else:
+        key = seed
 
     key_init, key_steps = jax.random.split(key, 2)
 
     # initialize states
-    state_dims = prior.mean().shape[0]
+
+    state_dims = prior.mean.shape[0]
 
     if sample_prior:
         states_init = prior.sample(seed=key_init, sample_shape=(num_samples,))
     else:
-        states_init = repeat(prior.mean(), "D -> B D", B=num_samples, D=state_dims)
+        states_init = repeat(prior.mean, "D -> B D", B=num_samples, D=state_dims)
 
     # initialize keys for samples
     key_samples = jax.random.split(key_steps, num_samples * num_time_steps)
     key_samples = rearrange(
-        key_samples, "(B T) D -> B T D", B=num_samples, T=num_time_steps, D=state_dims
+        key_samples, "(B T) D -> B T D", B=num_samples, T=num_time_steps
     )
 
     # sample body function
@@ -171,10 +174,8 @@ def sample_event(
     * Array(*sample_shape, batch_shape, event_shape)
         A sample of shape `sample_shape` + `batch_shape` + `event_shape`.
     """
-
     rng, sample_shape = convert_seed_and_sample_shape(seed, sample_shape)
     num_samples = functools.reduce(operator.mul, sample_shape, 1)  # product
-
     state_samples, obs_samples = sample_sequential_vectorized(
         prior,
         params,

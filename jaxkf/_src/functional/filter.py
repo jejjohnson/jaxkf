@@ -35,6 +35,15 @@ class State(NamedTuple):
     t: int
 
 
+class FilteredState(NamedTuple):
+    mu_filtered: jnp.ndarray
+    Sigma_filtered: jnp.ndarray
+    log_likelihoods: jnp.ndarray
+    mu_cond: jnp.ndarray
+    Sigma_cond: jnp.ndarray
+    ts: jnp.ndarray
+
+
 def filter_step_sequential(obs, state_init, params):
 
     # initialize state
@@ -85,29 +94,32 @@ def forward_filter(obs, state_init, params: KFParams):
 
     # forward filter
     (
-        filtered_means,
-        filtered_covs,
+        mu_filtered,
+        Sigma_filtered,
         log_likelihoods,
-        mu_cond_hist,
-        Sigma_cond_hist,
+        mu_cond,
+        Sigma_cond,
         ts,
     ) = vmap_fn(obs)
 
     # reshape to appropriate dimensions
-    filtered_means = filtered_means.reshape(state_mean_dims)
-    filtered_covs = filtered_covs.reshape(state_cov_dims)
+    mu_filtered = mu_filtered.reshape(state_mean_dims)
+    Sigma_filtered = Sigma_filtered.reshape(state_cov_dims)
     log_likelihoods = log_likelihoods.reshape(*batch_shape, timesteps)
-    mu_cond_hist = mu_cond_hist.reshape(state_mean_dims)
-    Sigma_cond_hist = Sigma_cond_hist.reshape(state_cov_dims)
+    mu_cond = mu_cond.reshape(state_mean_dims)
+    Sigma_cond = Sigma_cond.reshape(state_cov_dims)
 
-    return (
-        filtered_means,
-        filtered_covs,
-        log_likelihoods,
-        mu_cond_hist,
-        Sigma_cond_hist,
-        ts.squeeze(),
+    # return state
+    state = FilteredState(
+        mu_filtered=mu_filtered,
+        Sigma_filtered=Sigma_filtered,
+        log_likelihoods=log_likelihoods,
+        mu_cond=mu_cond,
+        Sigma_cond=Sigma_cond,
+        ts=ts,
     )
+
+    return state
 
 
 def kalman_step(x_t, state: State, params: KFParams):
@@ -127,9 +139,9 @@ def kalman_step(x_t, state: State, params: KFParams):
 
     # unroll KF params
     F = params.transition_matrix
-    Q = params.transition_noise
+    Q = params.transition_noise_covariance
     H = params.observation_matrix
-    R = params.observation_noise
+    R = params.observation_noise_covariance
 
     # get dims
     state_dim = F.shape[-1]
@@ -168,9 +180,9 @@ def filter_log_prob(x_t, mu_z, Sigma_z, params):
 
     # unroll KF params
     F = params.transition_matrix
-    Q = params.transition_noise
+    Q = params.transition_noise_covariance
     H = params.observation_matrix
-    R = params.observation_noise
+    R = params.observation_noise_covariance
 
     # predict step (state)
     mu_z_t, Sigma_z_t = predict_step_obs(mu_z, Sigma_z, F, Q)
