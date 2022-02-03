@@ -22,7 +22,11 @@ class LGSSM(tx.Module):
         pass
 
     def sample(self):
-        """z ~ p()"""
+        """z ~ p(z_0)"""
+        pass
+
+    def sample_posterior(self):
+        """x ~ p(x|z_0)"""
         pass
 
     def log_prob(self):
